@@ -9,7 +9,11 @@ use Spatie\Period\Exceptions\InvalidDate;
 
 class PeriodFactory
 {
-    public static function fromString(string $periodClass, string $string): Period
+    public static function fromString(
+        string $periodClass,
+        string $string,
+        ?array $data = null,
+    ): Period
     {
         preg_match('/(\[|\()([\d\-\s\:]+)[,]+([\d\-\s\:]+)(\]|\))/', $string, $matches);
 
@@ -32,6 +36,7 @@ class PeriodFactory
             end: $end,
             precision: $precision,
             boundaries: $boundaries,
+            data: $data,
         );
     }
 
@@ -41,7 +46,8 @@ class PeriodFactory
         string | DateTimeInterface $end,
         ?Precision $precision = null,
         ?Boundaries $boundaries = null,
-        ?string $format = null
+        ?string $format = null,
+        ?array $data = null,
     ): Period {
         $boundaries ??= Boundaries::EXCLUDE_NONE();
         $precision ??= Precision::DAY();
@@ -54,6 +60,7 @@ class PeriodFactory
             end: $end,
             precision: $precision,
             boundaries: $boundaries,
+            data: $data,
         );
 
         return $period;
@@ -65,6 +72,7 @@ class PeriodFactory
         DateTimeImmutable $includedEnd,
         Precision $precision,
         Boundaries $boundaries,
+        ?array $data = null,
     ): Period {
         $includedStart = $precision->roundDate(self::resolveDate($includedStart));
         $includedEnd = $precision->roundDate(self::resolveDate($includedEnd));
@@ -75,6 +83,7 @@ class PeriodFactory
             end: $boundaries->realEnd($includedEnd, $precision),
             precision: $precision,
             boundaries: $boundaries,
+            data: $data,
         );
 
         return $period;
