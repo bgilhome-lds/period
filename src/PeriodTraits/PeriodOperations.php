@@ -25,14 +25,16 @@ trait PeriodOperations
             return static::make(
                 $period->includedEnd()->add($this->interval),
                 $this->includedStart()->sub($this->interval),
-                $this->precision()
+                $this->precision(),
+                $this->data
             );
         }
 
         return static::make(
             $this->includedEnd()->add($this->interval),
             $period->includedStart()->sub($this->interval),
-            $this->precision()
+            $this->precision(),
+            $this->data
         );
     }
 
@@ -66,6 +68,7 @@ trait PeriodOperations
             $includedEnd,
             $this->precision(),
             $this->boundaries(),
+            $this->data
         );
     }
 
@@ -142,6 +145,7 @@ trait PeriodOperations
                 $other->includedStart()->sub($this->interval),
                 $this->precision(),
                 $this->boundaries(),
+                $this->data
             );
         }
 
@@ -152,6 +156,7 @@ trait PeriodOperations
                 $this->includedEnd(),
                 $this->precision(),
                 $this->boundaries(),
+                $this->data
             );
         }
 
@@ -202,6 +207,6 @@ trait PeriodOperations
 
         $end = $start->add($length);
 
-        return static::make($start, $end, $this->precision, $this->boundaries);
+        return static::make($start, $end, $this->precision, $this->boundaries, $this->data);
     }
 }
