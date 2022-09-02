@@ -2,6 +2,7 @@
 
 namespace Spatie\Period\PeriodTraits;
 
+use Spatie\Period\Boundaries;
 use Spatie\Period\Period;
 use Spatie\Period\PeriodCollection;
 use Spatie\Period\PeriodFactory;
@@ -208,5 +209,26 @@ trait PeriodOperations
         $end = $start->add($length);
 
         return static::make($start, $end, $this->precision, $this->boundaries, $this->data);
+    }
+
+    /**
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     *
+     * @return PeriodCollection
+     */
+    public function cut($dates): PeriodCollection
+    {
+        $dates = !is_array($dates) ? [$dates] : $dates;
+        $dates = array_filter($dates, function ($date) {
+           return $this->contains($date) && !$this->startsAt($date) && !$this->endsAt($date);
+        });
+        $start = $this->start;
+        foreach ($dates as $date) {
+            $periods[] = static::make($start, $date, $this->precision, $this->boundaries, null, $this->data);
+            $start = $date;
+        }
+        $periods[] = static::make($start, $this->end, $this->precision, $this->boundaries, null, $this->data);
+
+        return new PeriodCollection(...$periods);
     }
 }

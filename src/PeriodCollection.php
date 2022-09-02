@@ -205,10 +205,26 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     {
         $boundaries = $this->boundaries();
 
-        if (! $boundaries) {
+        if (!$boundaries) {
             return static::make();
         }
 
-        return static::make($boundaries)->subtract($boundaries->subtract(...$this));
+        return static::make($boundaries)
+            ->subtract($boundaries->subtract(...$this));
+    }
+
+    /**
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     *
+     * @return PeriodCollection
+     */
+    public function cut($dates): PeriodCollection
+    {
+        $periods = [];
+        foreach ($this->periods as $period) {
+            $periods = array_merge($periods, $period->cut($dates)->periods);
+        }
+
+        return static::make(...$periods);
     }
 }
