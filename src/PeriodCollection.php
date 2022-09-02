@@ -242,4 +242,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
 
         return static::make(...$grouped_pieces);
     }
+
+    public function toArray(): array
+    {
+        return $this->periods;
+    }
+
 }
