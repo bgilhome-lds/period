@@ -200,4 +200,19 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
 
         return $collection;
     }
+
+    /**
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     *
+     * @return PeriodCollection
+     */
+    public function cut($dates): PeriodCollection
+    {
+        $periods = [];
+        foreach ($this->periods as $period) {
+            $periods = array_merge($periods, $period->cut($dates)->periods);
+        }
+
+        return static::make(...$periods);
+    }
 }
