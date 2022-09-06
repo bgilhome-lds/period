@@ -252,7 +252,7 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
             $grouped_pieces[$period_string] = Period::fromString($period_string, $data);
         }
 
-        return static::make(...$grouped_pieces);
+        return static::make(...array_values($grouped_pieces));
     }
 
     public function toArray(): array
