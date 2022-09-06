@@ -200,4 +200,52 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
 
         return $collection;
     }
+
+    /**
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     *
+     * @return PeriodCollection
+     */
+    public function cut($dates): PeriodCollection
+    {
+        $periods = [];
+        foreach ($this->periods as $period) {
+            $periods = array_merge($periods, $period->cut($dates)->periods);
+        }
+
+        return static::make(...$periods);
+    }
+
+    public function cutOverlaps() {
+        $dates = array_merge(...array_map(function ($period) {
+            return [$period->start(), $period->end()];
+        }, $this->periods));
+
+        return $this->cut($dates);
+    }
+
+    public function merge(?Closure $closure = null): PeriodCollection
+    {
+        // Cut all overlapping regions and then group into start dates.
+        $grouped_pieces = [];
+        foreach ($this->cutOverlaps()->periods as $period) {
+            $grouped_pieces[$period->asString()][] = $period;
+        }
+
+        // De-dupe pieces with array_reduce with the given closure function on the data.
+        foreach ($grouped_pieces as $period_string => $periods) {
+            $data = $closure ? array_reduce($periods, function ($data, $period) use ($closure) {
+               return $closure($data, $period->data ?? []);
+            }, []) : NULL;
+            $grouped_pieces[$period_string] = Period::fromString($period_string, $data);
+        }
+
+        return static::make(...$grouped_pieces);
+    }
+
+    public function toArray(): array
+    {
+        return $this->periods;
+    }
+
 }

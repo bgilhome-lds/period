@@ -31,7 +31,8 @@ class Period implements IteratorAggregate
         protected DateTimeImmutable $start,
         protected DateTimeImmutable $end,
         protected Precision $precision,
-        protected Boundaries $boundaries
+        protected Boundaries $boundaries,
+        public array | NULL $data,
     ) {
         if ($start > $end) {
             throw InvalidPeriod::endBeforeStart($start, $end);
@@ -48,7 +49,8 @@ class Period implements IteratorAggregate
         DateTimeInterface | string $end,
         ?Precision $precision = null,
         ?Boundaries $boundaries = null,
-        ?string $format = null
+        ?string $format = null,
+        ?array $data = null,
     ): static {
         return PeriodFactory::make(
             periodClass: static::class,
@@ -57,12 +59,13 @@ class Period implements IteratorAggregate
             precision: $precision,
             boundaries: $boundaries,
             format: $format,
+            data: $data,
         );
     }
 
-    public static function fromString(string $string): static
+    public static function fromString(string $string, ?array $data = null): static
     {
-        return PeriodFactory::fromString(static::class, $string);
+        return PeriodFactory::fromString(static::class, $string, $data);
     }
 
     public function getIterator(): DatePeriod
