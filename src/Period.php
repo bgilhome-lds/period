@@ -19,51 +19,74 @@ class Period implements IteratorAggregate
     use PeriodComparisons;
     use PeriodOperations;
 
-    protected PeriodDuration $duration;
+    /**
+     * @var \Spatie\Period\PeriodDuration
+     */
+    protected $duration;
 
-    protected DateTimeImmutable $includedStart;
+    /**
+     * @var \DateTimeImmutable
+     */
+    protected $includedStart;
 
-    protected DateTimeImmutable $includedEnd;
+    /**
+     * @var \DateTimeImmutable
+     */
+    protected $includedEnd;
 
-    protected DateInterval $interval;
-
-    public function __construct(
-        protected DateTimeImmutable $start,
-        protected DateTimeImmutable $end,
-        protected Precision $precision,
-        protected Boundaries $boundaries,
-        public array | NULL $data,
-    ) {
+    /**
+     * @var \DateInterval
+     */
+    protected $interval;
+    /**
+     * @var \DateTimeImmutable
+     */
+    protected $start;
+    /**
+     * @var \DateTimeImmutable
+     */
+    protected $end;
+    /**
+     * @var \Spatie\Period\Precision
+     */
+    protected $precision;
+    /**
+     * @var \Spatie\Period\Boundaries
+     */
+    protected $boundaries;
+    /**
+     * @var mixed[]|null
+     */
+    public $data;
+    public function __construct(DateTimeImmutable $start, DateTimeImmutable $end, Precision $precision, Boundaries $boundaries, ?array $data)
+    {
+        $this->start = $start;
+        $this->end = $end;
+        $this->precision = $precision;
+        $this->boundaries = $boundaries;
+        $this->data = $data;
         if ($start > $end) {
             throw InvalidPeriod::endBeforeStart($start, $end);
         }
-
         $this->interval = $this->precision->interval();
         $this->includedStart = $boundaries->startIncluded() ? $start : $start->add($this->interval);
         $this->includedEnd = $boundaries->endIncluded() ? $end : $end->sub($this->interval);
         $this->duration = new PeriodDuration($this);
     }
-
-    public static function make(
-        DateTimeInterface | string $start,
-        DateTimeInterface | string $end,
-        ?Precision $precision = null,
-        ?Boundaries $boundaries = null,
-        ?string $format = null,
-        ?array $data = null,
-    ): static {
-        return PeriodFactory::make(
-            periodClass: static::class,
-            start: $start,
-            end: $end,
-            precision: $precision,
-            boundaries: $boundaries,
-            format: $format,
-            data: $data,
-        );
+    /**
+     * @param \DateTimeInterface|string $start
+     * @param \DateTimeInterface|string $end
+     * @return $this
+     */
+    public static function make($start, $end, ?Precision $precision = null, ?Boundaries $boundaries = null, ?string $format = null, ?array $data = null)
+    {
+        return PeriodFactory::make(static::class, $start, $end, $precision, $boundaries, $format, $data);
     }
 
-    public static function fromString(string $string, ?array $data = null): static
+    /**
+     * @return $this
+     */
+    public static function fromString(string $string, ?array $data = null)
     {
         return PeriodFactory::fromString(static::class, $string, $data);
     }

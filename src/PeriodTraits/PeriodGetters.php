@@ -11,7 +11,10 @@ use Spatie\Period\Precision;
 /** @mixin \Spatie\Period\Period */
 trait PeriodGetters
 {
-    protected string $asString;
+    /**
+     * @var string
+     */
+    protected $asString;
 
     public function isStartIncluded(): bool
     {
@@ -55,7 +58,7 @@ trait PeriodGetters
 
     public function ceilingEnd(?Precision $precision = null): DateTimeImmutable
     {
-        $precision ??= $this->precision;
+        $precision = $precision ?? $this->precision;
 
         if ($precision->higherThan($this->precision)) {
             throw CannotCeilLowerPrecision::precisionIsLower($this->precision, $precision);

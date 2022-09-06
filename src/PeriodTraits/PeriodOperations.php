@@ -10,7 +10,7 @@ use Spatie\Period\PeriodFactory;
 /** @mixin Period */
 trait PeriodOperations
 {
-    public function gap(Period $period): ?static
+    public function gap(Period $period): ?self
     {
         $this->ensurePrecisionMatches($period);
 
@@ -39,7 +39,7 @@ trait PeriodOperations
         );
     }
 
-    public function overlap(Period ...$others): ?static
+    public function overlap(Period ...$others): ?self
     {
         if (count($others) === 0) {
             return null;
@@ -73,7 +73,7 @@ trait PeriodOperations
         );
     }
 
-    protected function overlapAll(Period ...$periods): ?static
+    protected function overlapAll(Period ...$periods): ?self
     {
         $overlap = clone $this;
 
@@ -200,7 +200,10 @@ trait PeriodOperations
         return $boundaries->subtract($overlap);
     }
 
-    public function renew(): static
+    /**
+     * @return $this
+     */
+    public function renew()
     {
         $length = $this->includedStart->diff($this->includedEnd);
 

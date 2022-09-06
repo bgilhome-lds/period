@@ -12,9 +12,12 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     use IterableImplementation;
 
     /** @var \Spatie\Period\Period[] */
-    protected array $periods;
+    protected $periods;
 
-    public static function make(Period ...$periods): static
+    /**
+     * @return $this
+     */
+    public static function make(Period ...$periods)
     {
         return new static(...$periods);
     }
@@ -69,7 +72,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         );
     }
 
-    public function gaps(): static
+    /**
+     * @return $this
+     */
+    public function gaps()
     {
         $boundaries = $this->boundaries();
 
@@ -80,7 +86,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $boundaries->subtract(...$this);
     }
 
-    public function intersect(Period $intersection): static
+    /**
+     * @return $this
+     */
+    public function intersect(Period $intersection)
     {
         $intersected = static::make();
 
@@ -97,7 +106,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $intersected;
     }
 
-    public function add(Period ...$periods): static
+    /**
+     * @return $this
+     */
+    public function add(Period ...$periods)
     {
         $collection = clone $this;
 
@@ -108,7 +120,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $collection;
     }
 
-    public function map(Closure $closure): static
+    /**
+     * @return $this
+     */
+    public function map(Closure $closure)
     {
         $collection = clone $this;
 
@@ -119,7 +134,10 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $collection;
     }
 
-    public function reduce(Closure $closure, $initial = null): mixed
+    /**
+     * @return mixed
+     */
+    public function reduce(Closure $closure, $initial = null)
     {
         $carry = $initial;
 
@@ -130,11 +148,128 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $carry;
     }
 
-    public function filter(Closure $closure): static
+    /**
+     * @return $this
+     */
+    public function filter(Closure $closure)
     {
         $collection = clone $this;
 
-        $collection->periods = array_values(array_filter($collection->periods, $closure));
+        $collection->periods = array_values(array_filter($collection->periods, (((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure))) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)))) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure))) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)))), (((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure))) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)))) === null ? ARRAY_FILTER_USE_BOTH : (((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure))) === null ? ARRAY_FILTER_USE_BOTH : ((($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : ($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure)) === null ? ARRAY_FILTER_USE_BOTH : (($closure === null ? function ($v, $k) : bool {
+            return !empty($v);
+        } : $closure) === null ? ARRAY_FILTER_USE_BOTH : ($closure === null ? ARRAY_FILTER_USE_BOTH : 0))))));
 
         return $collection;
     }
@@ -144,7 +279,11 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return count($this->periods) === 0;
     }
 
-    public function subtract(PeriodCollection | Period $others): static
+    /**
+     * @param \Spatie\Period\PeriodCollection|\Spatie\Period\Period $others
+     * @return $this
+     */
+    public function subtract($others)
     {
         if ($others instanceof Period) {
             $others = new static($others);
