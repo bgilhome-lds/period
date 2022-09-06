@@ -6,12 +6,20 @@ trait IterableImplementation
 {
     protected $position = 0;
 
-    public function offsetGet(mixed $offset): mixed
+    /**
+     * @param mixed $offset
+     * @return mixed
+     */
+    public function offsetGet($offset)
     {
         return $this->periods[$offset] ?? null;
     }
 
-    public function offsetSet(mixed $offset, mixed $value): void
+    /**
+     * @param mixed $offset
+     * @param mixed $value
+     */
+    public function offsetSet($offset, $value): void
     {
         if (is_null($offset)) {
             $this->periods[] = $value;
@@ -22,12 +30,18 @@ trait IterableImplementation
         $this->periods[$offset] = $value;
     }
 
-    public function offsetExists(mixed $offset): bool
+    /**
+     * @param mixed $offset
+     */
+    public function offsetExists($offset): bool
     {
         return array_key_exists($offset, $this->periods);
     }
 
-    public function offsetUnset(mixed $offset): void
+    /**
+     * @param mixed $offset
+     */
+    public function offsetUnset($offset): void
     {
         unset($this->periods[$offset]);
     }
@@ -37,7 +51,10 @@ trait IterableImplementation
         $this->position++;
     }
 
-    public function key(): mixed
+    /**
+     * @return mixed
+     */
+    public function key()
     {
         return $this->position;
     }

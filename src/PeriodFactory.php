@@ -9,88 +9,48 @@ use Spatie\Period\Exceptions\InvalidDate;
 
 class PeriodFactory
 {
-    public static function fromString(
-        string $periodClass,
-        string $string,
-        ?array $data = null,
-    ): Period
+    public static function fromString(string $periodClass, string $string, ?array $data = null): Period
     {
         preg_match('/(\[|\()([\d\-\s\:]+)[,]+([\d\-\s\:]+)(\]|\))/', $string, $matches);
-
         [1 => $startBoundary, 2 => $startDate, 3 => $endDate, 4 => $endBoundary] = $matches;
-
         $boundaries = Boundaries::fromString($startBoundary, $endBoundary);
-
         $startDate = trim($startDate);
-
         $endDate = trim($endDate);
-
         $precision = Precision::fromString($startDate);
-
         $start = self::resolveDate($startDate, $precision->dateFormat());
-
         $end = self::resolveDate($endDate, $precision->dateFormat());
-
-        return new $periodClass(
-            start: $start,
-            end: $end,
-            precision: $precision,
-            boundaries: $boundaries,
-            data: $data,
-        );
+        return new $periodClass(start: $start, end: $end, precision: $precision, boundaries: $boundaries, data: $data);
     }
 
-    public static function make(
-        string $periodClass,
-        string | DateTimeInterface $start,
-        string | DateTimeInterface $end,
-        ?Precision $precision = null,
-        ?Boundaries $boundaries = null,
-        ?string $format = null,
-        ?array $data = null,
-    ): Period {
-        $boundaries ??= Boundaries::EXCLUDE_NONE();
-        $precision ??= Precision::DAY();
+    /**
+     * @param string|\DateTimeInterface $start
+     * @param string|\DateTimeInterface $end
+     */
+    public static function make(string $periodClass, $start, $end, ?Precision $precision = null, ?Boundaries $boundaries = null, ?string $format = null, ?array $data = null): Period
+    {
+        $boundaries = $boundaries ?? Boundaries::EXCLUDE_NONE();
+        $precision = $precision ?? Precision::DAY();
         $start = $precision->roundDate(self::resolveDate($start, $format));
         $end = $precision->roundDate(self::resolveDate($end, $format));
-
         /** @var \Spatie\Period\Period $period */
-        $period = new $periodClass(
-            start: $start,
-            end: $end,
-            precision: $precision,
-            boundaries: $boundaries,
-            data: $data,
-        );
-
+        $period = new $periodClass(start: $start, end: $end, precision: $precision, boundaries: $boundaries, data: $data);
         return $period;
     }
 
-    public static function makeWithBoundaries(
-        string $periodClass,
-        DateTimeImmutable $includedStart,
-        DateTimeImmutable $includedEnd,
-        Precision $precision,
-        Boundaries $boundaries,
-        ?array $data = null,
-    ): Period {
+    public static function makeWithBoundaries(string $periodClass, DateTimeImmutable $includedStart, DateTimeImmutable $includedEnd, Precision $precision, Boundaries $boundaries, ?array $data = null): Period
+    {
         $includedStart = $precision->roundDate(self::resolveDate($includedStart));
         $includedEnd = $precision->roundDate(self::resolveDate($includedEnd));
-
         /** @var \Spatie\Period\Period $period */
-        $period = new $periodClass(
-            start: $boundaries->realStart($includedStart, $precision),
-            end: $boundaries->realEnd($includedEnd, $precision),
-            precision: $precision,
-            boundaries: $boundaries,
-            data: $data,
-        );
-
+        $period = new $periodClass(start: $boundaries->realStart($includedStart, $precision), end: $boundaries->realEnd($includedEnd, $precision), precision: $precision, boundaries: $boundaries, data: $data);
         return $period;
     }
 
+    /**
+     * @param \DateTimeInterface|string $date
+     */
     protected static function resolveDate(
-        DateTimeInterface | string $date,
+        $date,
         ?string $format = null
     ): DateTimeImmutable {
         if ($date instanceof DateTimeImmutable) {
@@ -113,7 +73,7 @@ class PeriodFactory
             throw InvalidDate::forFormat($date, $format);
         }
 
-        if (! str_contains($format, ' ')) {
+        if (strpos($format, ' ') === false) {
             $dateTime = $dateTime->setTime(0, 0, 0);
         }
 
@@ -128,7 +88,7 @@ class PeriodFactory
             return $format;
         }
 
-        if (str_contains($date, ' ')) {
+        if (strpos($date, ' ') !== false) {
             return 'Y-m-d H:i:s';
         }
 
