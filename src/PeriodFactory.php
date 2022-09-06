@@ -19,7 +19,7 @@ class PeriodFactory
         $precision = Precision::fromString($startDate);
         $start = self::resolveDate($startDate, $precision->dateFormat());
         $end = self::resolveDate($endDate, $precision->dateFormat());
-        return new $periodClass(start: $start, end: $end, precision: $precision, boundaries: $boundaries, data: $data);
+        return new $periodClass($start, $end, $precision, $boundaries, $data);
     }
 
     /**
@@ -33,7 +33,7 @@ class PeriodFactory
         $start = $precision->roundDate(self::resolveDate($start, $format));
         $end = $precision->roundDate(self::resolveDate($end, $format));
         /** @var \Spatie\Period\Period $period */
-        $period = new $periodClass(start: $start, end: $end, precision: $precision, boundaries: $boundaries, data: $data);
+        $period = new $periodClass($start, $end, $precision, $boundaries, $data);
         return $period;
     }
 
@@ -42,7 +42,7 @@ class PeriodFactory
         $includedStart = $precision->roundDate(self::resolveDate($includedStart));
         $includedEnd = $precision->roundDate(self::resolveDate($includedEnd));
         /** @var \Spatie\Period\Period $period */
-        $period = new $periodClass(start: $boundaries->realStart($includedStart, $precision), end: $boundaries->realEnd($includedEnd, $precision), precision: $precision, boundaries: $boundaries, data: $data);
+        $period = new $periodClass($boundaries->realStart($includedStart, $precision), $boundaries->realEnd($includedEnd, $precision), $precision, $boundaries, $data);
         return $period;
     }
 
