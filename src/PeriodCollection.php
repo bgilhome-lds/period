@@ -363,7 +363,7 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return $this->cut($dates);
     }
 
-    public function merge(?Closure $closure = null): PeriodCollection
+    public function mergeOverlaps(?Closure $closure = NULL): PeriodCollection
     {
         // Cut all overlapping regions and then group into start dates.
         $grouped_pieces = [];
