@@ -382,6 +382,45 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return static::make(...array_values($grouped_pieces));
     }
 
+    public function join(?Closure $closure = NULL): PeriodCollection
+    {
+        // Default $closure is if period data is equal.
+        $closure = $closure ?: function ($a, $b) {
+            return $a['data'] == $b['data'];
+        };
+
+        // Key periods by start timestamp.
+        $periods = $this->periods;
+        $starts = array_map(function ($period) {
+            return $period->start()->getTimestamp();
+        }, $this->periods);
+        $periods = array_combine($starts, $periods);
+        sort($starts);
+
+        // Join contiguous periods.
+        $joined = [];
+        foreach ($starts as $start) {
+            if ($period = $periods[$start] ?? NULL) {
+
+                // If this end matches another start, and closure returns TRUE, join.
+                $next_period = $period;
+                while ($next_period !== NULL
+                    && $closure($period, $next_period)
+                ) {
+                    // Join to original period, unset joined period and search again.
+                    $joined_period = clone $next_period;
+                    unset($periods[$joined_period->start()->getTimestamp()]);
+                    $end = $joined_period->end()->getTimestamp();
+                    $next_period = isset($periods[$end]) ? clone $periods[$end] : NULL;
+                }
+
+                $joined[] = Period::make($period->start(), $joined_period->end(), $period->precision(), $period->boundaries(), NULL, $period->data);
+            }
+        }
+
+        return static::make(...array_values($joined));
+    }
+
     public function toArray(): array
     {
         return $this->periods;
