@@ -341,7 +341,7 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     }
 
     /**
-     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates - must be sorted
      *
      * @return PeriodCollection
      */
@@ -356,11 +356,18 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     }
 
     public function cutOverlaps() {
-        $dates = array_merge(...array_map(function ($period) {
-            return [$period->start(), $period->end()];
+        // Key by timestamp to ensure dates are unique.
+        $dates = array_replace(...array_map(function ($period) {
+            return [
+                $period->start()->getTimestamp() => $period->start(),
+                $period->end()->getTimestamp() => $period->end(),
+            ];
         }, $this->periods));
+        
+        // Sort before passing to cut().
+        ksort($dates);
 
-        return $this->cut($dates);
+        return $this->cut(array_values($dates));
     }
 
     public function mergeOverlaps(?Closure $closure = NULL): PeriodCollection
