@@ -212,7 +212,7 @@ trait PeriodOperations
     }
 
     /**
-     * @param \DateTimeInterface|\DateTimeInterface[] $dates
+     * @param \DateTimeInterface|\DateTimeInterface[] $dates - must be sorted
      *
      * @return PeriodCollection
      */
