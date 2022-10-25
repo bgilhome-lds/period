@@ -275,7 +275,7 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
             return $period->start()->getTimestamp();
         }, $this->periods);
         $periods = array_combine($starts, $periods);
-        sort($starts);
+        ksort($starts);
 
         // Join contiguous periods.
         $joined = [];
