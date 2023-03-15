@@ -13,8 +13,7 @@ class PeriodFactory
         string $periodClass,
         string $string,
         ?array $data = null,
-    ): Period
-    {
+    ): Period {
         preg_match('/(\[|\()([\d\-\s\:]+)[,]+([\d\-\s\:]+)(\]|\))/', $string, $matches);
 
         [1 => $startBoundary, 2 => $startDate, 3 => $endDate, 4 => $endBoundary] = $matches;

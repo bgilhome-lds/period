@@ -32,7 +32,7 @@ class Period implements IteratorAggregate
         protected DateTimeImmutable $end,
         protected Precision $precision,
         protected Boundaries $boundaries,
-        public array | NULL $data,
+        public array | null $data,
     ) {
         if ($start > $end) {
             throw InvalidPeriod::endBeforeStart($start, $end);

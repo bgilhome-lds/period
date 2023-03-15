@@ -2,7 +2,6 @@
 
 namespace Spatie\Period\PeriodTraits;
 
-use Spatie\Period\Boundaries;
 use Spatie\Period\Period;
 use Spatie\Period\PeriodCollection;
 use Spatie\Period\PeriodFactory;
@@ -218,9 +217,9 @@ trait PeriodOperations
      */
     public function cut($dates): PeriodCollection
     {
-        $dates = !is_array($dates) ? [$dates] : $dates;
+        $dates = ! is_array($dates) ? [$dates] : $dates;
         $dates = array_filter($dates, function ($date) {
-           return $this->contains($date) && !$this->startsAt($date) && !$this->endsAt($date);
+            return $this->contains($date) && ! $this->startsAt($date) && ! $this->endsAt($date);
         });
         $start = $this->start;
         foreach ($dates as $date) {

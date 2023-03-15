@@ -205,7 +205,7 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     {
         $boundaries = $this->boundaries();
 
-        if (!$boundaries) {
+        if (! $boundaries) {
             return static::make();
         }
 
@@ -228,7 +228,8 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         return static::make(...$periods);
     }
 
-    public function cutOverlaps() {
+    public function cutOverlaps()
+    {
         // Key by timestamp to ensure dates are unique.
         $dates = array_replace(...array_map(function ($period) {
             return [
@@ -236,14 +237,14 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
                 $period->end()->getTimestamp() => $period->end(),
             ];
         }, $this->periods));
-        
+
         // Sort before passing to cut().
         ksort($dates);
 
         return $this->cut(array_values($dates));
     }
 
-    public function mergeOverlaps(?Closure $closure = NULL): PeriodCollection
+    public function mergeOverlaps(?Closure $closure = null): PeriodCollection
     {
         // Cut all overlapping regions and then group into start dates.
         $grouped_pieces = [];
@@ -254,15 +255,15 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         // De-dupe pieces with array_reduce with the given closure function on the data.
         foreach ($grouped_pieces as $period_string => $periods) {
             $data = $closure ? array_reduce($periods, function ($data, $period) use ($closure) {
-               return $closure($data, $period->data ?? []);
-            }, []) : NULL;
+                return $closure($data, $period->data ?? []);
+            }, []) : null;
             $grouped_pieces[$period_string] = Period::fromString($period_string, $data);
         }
 
         return static::make(...array_values($grouped_pieces));
     }
 
-    public function join(?Closure $closure = NULL): PeriodCollection
+    public function join(?Closure $closure = null): PeriodCollection
     {
         // Default $closure is if period data is equal.
         $closure = $closure ?: function ($a, $b) {
@@ -280,21 +281,20 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
         // Join contiguous periods.
         $joined = [];
         foreach ($starts as $start) {
-            if ($period = $periods[$start] ?? NULL) {
-
+            if ($period = $periods[$start] ?? null) {
                 // If this end matches another start, and closure returns TRUE, join.
                 $next_period = $period;
-                while ($next_period !== NULL
+                while ($next_period !== null
                     && $closure($period, $next_period)
                 ) {
                     // Join to original period, unset joined period and search again.
                     $joined_period = clone $next_period;
                     unset($periods[$joined_period->start()->getTimestamp()]);
                     $end = $joined_period->end()->getTimestamp();
-                    $next_period = isset($periods[$end]) ? clone $periods[$end] : NULL;
+                    $next_period = isset($periods[$end]) ? clone $periods[$end] : null;
                 }
 
-                $joined[] = Period::make($period->start(), $joined_period->end(), $period->precision(), $period->boundaries(), NULL, $period->data);
+                $joined[] = Period::make($period->start(), $joined_period->end(), $period->precision(), $period->boundaries(), null, $period->data);
             }
         }
 
@@ -305,5 +305,4 @@ class PeriodCollection implements ArrayAccess, Iterator, Countable
     {
         return $this->periods;
     }
-
 }
